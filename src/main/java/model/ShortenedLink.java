@@ -3,20 +3,45 @@ package model;
 import java.time.LocalDateTime;
 
 public class ShortenedLink {
-    private String originalUrl;
-    private String shortenedUrl;
-    private int remainingClicks;
+    private final String originalUrl;
+    private final String shortUrl;
+    private final User owner;
     private LocalDateTime expiryDate;
-    private User owner;
+    private int remainingClicks;
 
-    public ShortenedLink(String originalUrl, String shortenedUrl, int remainingClicks, LocalDateTime expiryDate, User owner) {
+    public ShortenedLink(String originalUrl, String shortUrl, User owner, LocalDateTime expiryDate, int remainingClicks) {
         this.originalUrl = originalUrl;
-        this.shortenedUrl = shortenedUrl;
-        this.remainingClicks = remainingClicks;
-        this.expiryDate = expiryDate;
+        this.shortUrl = shortUrl;
         this.owner = owner;
+        this.expiryDate = expiryDate;
+        this.remainingClicks = remainingClicks;
     }
 
-    // Getters and setters
-    // ...
+    public String getOriginalUrl() {
+        return originalUrl;
+    }
+
+    public String getShortUrl() {
+        return shortUrl;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDateTime expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public int getRemainingClicks() {
+        return remainingClicks;
+    }
+
+    public void setRemainingClicks(int remainingClicks) {
+        this.remainingClicks = remainingClicks;
+    }
 }
