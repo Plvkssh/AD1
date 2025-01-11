@@ -2,52 +2,46 @@ package service;
 
 import model.ShortenedLink;
 import model.User;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public class ShorteningService {
     private final Map<String, ShortenedLink> urlStorage = new HashMap<>();
-    private static final String DOMAIN = "clck.ru/";
 
     public String shortenUrl(String originalUrl, User user, int clickLimit) {
-        String shortUrl = DOMAIN + generateRandomCode();
-        LocalDateTime expiryDate = LocalDateTime.now().plusDays(1); // Срок жизни — 1 сутки
+        String shortUrl = generateShortUrl();
 
-        ShortenedLink link = new ShortenedLink(originalUrl, shortUrl, clickLimit, expiryDate, user);
+        int effectiveClickLimit = Math.min(clickLimit, util.ConfigLoader.getDefaultClickLimit());
+        LocalDateTime expiryDate = LocalDateTime.now().plusDays(util.ConfigLoader.getDefaultExpiryDays());
+
+        ShortenedLink link = new ShortenedLink(originalUrl, shortUrl, user, expiryDate, effectiveClickLimit);
         urlStorage.put(shortUrl, link);
         return shortUrl;
     }
 
-    public String redirect(String shortUrl) throws Exception {
+    public void cleanExpiredLinks() {
+        urlStorage.entrySet().removeIf(entryLocalDateTime.now().isAfter(entry.getValue().getExpiryDate())
+        );
+    }
+
+    public void updateClickLimit(String shortUrl, int newLimit, User user) throws Exception {
         ShortenedLink link = urlStorage.get(shortUrl);
-
-        if (link == null || link.getRemainingClicks() <= 0 || LocalDateTime.now().isAfter(link.getExpiryDate())) {
-            throw new Exception("Ссылка истекла или недоступна.");
+        if (link == null || !link.getOwner().equals(user)) {
+            throw new Exception("У вас нет прав на изменение этой ссылки.");
         }
-
-        link.setRemainingClicks(link.getRemainingClicks() - 1);
-
-        if (link.getRemainingClicks() == 0) {
-            notifyUser(link.getOwner());
-        }
-        
-        return link.getOriginalUrl();
+        link.setRemainingClicks(newLimit);
     }
 
-    private String generateRandomCode() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 6; i++) { // Сгенерируем код длиной 6 символов
-            code.append(chars.charAt(random.nextInt(chars.length())));
+    public void deleteLink(String shortUrl, User user) throws Exception {
+        ShortenedLink link = urlStorage.get(shortUrl);
+        if (link == null || !link.getOwner().equals(user)) {
+            throw new Exception("У вас нет прав на удаление этой ссылки.");
         }
-        return code.toString();
+        urlStorage.remove(shortUrl);
     }
 
-    private void notifyUser(User user) {
-        System.out.println("Уведомление для пользователя " + user.getUserId() + ": ссылка недоступна.");
+    private String generateShortUrl() {
+        return "short" + System.currentTimeMillis(); // Простая генерация ссылки
     }
 }
