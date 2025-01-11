@@ -1,15 +1,13 @@
 package model;
 
-import java.util.UUID;
-
 public class User {
-    private final UUID userId;
-    
-    public User() {
-        this.userId = UUID.randomUUID();
+    private final String username;
+
+    public User(String username) {
+        this.username = username;
     }
-    
-    public UUID getUserId() {
-        return userId;
+
+    public String getUsername() {
+        return username;
     }
 }
