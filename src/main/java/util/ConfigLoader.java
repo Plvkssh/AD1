@@ -10,7 +10,7 @@ public class ConfigLoader {
         try {
             properties.load(ConfigLoader.class.getClassLoader().getResourceAsStream("config.properties"));
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось загрузить конфигурацию!", e);
+            throw new RuntimeException("Не удалось загрузить конфигурационный файл!", e);
         }
     }
 
