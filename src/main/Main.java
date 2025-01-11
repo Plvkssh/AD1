@@ -1,11 +1,15 @@
+package main;
+
 import controller.UrlShortenerController;
+import service.ShorteningService;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            new UrlShortenerController().start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Инициализация сервиса и контроллера
+        ShorteningService shorteningService = new ShorteningService();
+        UrlShortenerController controller = new UrlShortenerController(shorteningService);
+
+        // Запуск программы
+        controller.start();
     }
 }
