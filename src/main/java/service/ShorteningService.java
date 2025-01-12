@@ -12,7 +12,7 @@ public class ShorteningService {
 
     // Метод для сокращения URL
     public String shortenUrl(String originalUrl, User user, int clickLimit) {
-        // Генерируем "короткую" ссылку (на самом деле просто заглушка)
+        // Генерируем "короткую" ссылку
         String shortUrl = generateShortUrl();
 
         // Учитываем лимиты и время истечения из конфигурации
